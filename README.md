@@ -10,7 +10,7 @@ This service is used by a video streaming site to keep track of the most replaye
 [Docker Desktop] (https://docs.docker.com/desktop/install/mac-install/)
 
 
-2. Download the image file from Docker Hub : [companion-service](targetURL).
+2. Download the image file from Docker Hub : [companion-service](https://hub.docker.com/repository/docker/shridevijpmc/companion-service/general).
 3. Run below command.
    1. docker pull shridevijpmc/companion-service
    2. docker run -d --name companion-service -p 9092:9092
