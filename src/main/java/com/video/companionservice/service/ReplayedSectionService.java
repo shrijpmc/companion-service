@@ -20,12 +20,16 @@ public class ReplayedSectionService {
     @Autowired
     VideoService videoService;
 
+    /** Add or update replayed section of a video by incrementing replayCount
+     * @param  replayedSectionDTO
+     * @return  ReplayedSectionDTO**/
 
     public ReplayedSectionDTO addReplayVideoSection(ReplayedSectionDTO replayedSectionDTO) {
             ReplayedSection existingReplayedSection = replayedSectionRepository.findExistingReplayedSections(
                     replayedSectionDTO.getVideo_id(),
                     replayedSectionDTO.getStartTime(), replayedSectionDTO.getEndTime());
             synchronized (this) {
+                // synchronizing this check then act logic for concurrent requests.
                 if (null != existingReplayedSection) {
                     existingReplayedSection.setReplayCount(existingReplayedSection.getReplayCount() + 1);
                     return saveReplaySection(existingReplayedSection);
