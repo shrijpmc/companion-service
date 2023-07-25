@@ -9,7 +9,7 @@ import com.video.companionservice.repo.ReplayedSectionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
 @Service
 public class ReplayedSectionService {
@@ -22,20 +22,20 @@ public class ReplayedSectionService {
 
 
     public ReplayedSectionDTO addReplayVideoSection(ReplayedSectionDTO replayedSectionDTO) {
-/** TODO: Logic for optimistic locking for replayCount **/
             ReplayedSection existingReplayedSection = replayedSectionRepository.findExistingReplayedSections(
                     replayedSectionDTO.getVideo_id(),
                     replayedSectionDTO.getStartTime(), replayedSectionDTO.getEndTime());
-
-            if (null != existingReplayedSection) {
-                existingReplayedSection.setReplayCount(existingReplayedSection.getReplayCount() + 1);
-                return saveReplaySection(existingReplayedSection);
-            } else {
-                ReplayedSection replayedSection = DomainClassConverter.convertToReplayedSection(replayedSectionDTO);
-                return saveReplaySection(replayedSection);
+            synchronized (this) {
+                if (null != existingReplayedSection) {
+                    existingReplayedSection.setReplayCount(existingReplayedSection.getReplayCount() + 1);
+                    return saveReplaySection(existingReplayedSection);
+                } else {
+                    ReplayedSection replayedSection = DomainClassConverter.convertToReplayedSection(replayedSectionDTO);
+                    return saveReplaySection(replayedSection);
+                }
             }
-
     }
+
 
     private ReplayedSectionDTO saveReplaySection(ReplayedSection replayedSection) {
         ReplayedSection replayedSecTn = replayedSectionRepository.save(replayedSection);
@@ -45,14 +45,11 @@ public class ReplayedSectionService {
 
     public MostReplayedVideoSectionDTO getMostReplayedVideoSection(Long videoId) {
         ReplayedSection replayedSecTn = replayedSectionRepository.getMostReplayedVideoSection(videoId);
+        if(null == replayedSecTn){
+            return new MostReplayedVideoSectionDTO();
+        }
         Video video = videoService.findVideoById(videoId);
         MostReplayedVideoSectionDTO sectionDTO = DomainClassConverter.convertToMostReplayedSectionDTO(video,replayedSecTn);
         return sectionDTO;
-    }
-
-    public List<ReplayedSectionDTO> getAll() {
-        List<ReplayedSection> res = replayedSectionRepository.findAll();
-        List<ReplayedSectionDTO> replayedSectionDTOList =  DomainClassConverter.convertToReplayedSectionDTOLst(res);
-        return  replayedSectionDTOList;
     }
 }
