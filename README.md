@@ -15,6 +15,3 @@ This service is used by a video streaming site to keep track of the most replaye
    1. docker pull shridevijpmc/companion-service
    2. docker run -d --name companion-service -p 9092:9092
 4. View and try out different end points by opening  http://localhost:9092/swagger-url.html URL.
-
-
-##### Download the repo : [myrepo](repo_link)
