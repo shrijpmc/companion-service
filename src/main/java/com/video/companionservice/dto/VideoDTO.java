@@ -26,7 +26,6 @@ public class VideoDTO implements Serializable {
         return videoId;
     }
 
-    @JsonIgnore
     public void setVideoId(Long videoId) {
         this.videoId = videoId;
     }
