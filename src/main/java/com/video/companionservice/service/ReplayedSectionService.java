@@ -25,11 +25,12 @@ public class ReplayedSectionService {
      * @return  ReplayedSectionDTO**/
 
     public ReplayedSectionDTO addReplayVideoSection(ReplayedSectionDTO replayedSectionDTO) {
+        // check then act logic for concurrent requests.
+        synchronized (this) {
             ReplayedSection existingReplayedSection = replayedSectionRepository.findExistingReplayedSections(
                     replayedSectionDTO.getVideo_id(),
                     replayedSectionDTO.getStartTime(), replayedSectionDTO.getEndTime());
-            synchronized (this) {
-                // synchronizing this check then act logic for concurrent requests.
+
                 if (null != existingReplayedSection) {
                     existingReplayedSection.setReplayCount(existingReplayedSection.getReplayCount() + 1);
                     return saveReplaySection(existingReplayedSection);

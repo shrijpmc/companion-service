@@ -27,38 +27,41 @@ public class CompanionController {
     ReplayedSectionService replayedService;
 
 
-    @Operation(summary = "Using tis endpoint video-streaming application can add videos to companion service")
+    @Operation(summary = "Using this endpoint video-streaming application can add videos to companion service")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "Added video"),
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "500", description = "Server Error")})
     @PostMapping("/addVideo")
+    @ResponseStatus(HttpStatus.CREATED)
     public VideoDTO addVideo(@RequestBody(required = true) VideoDTO video){
         return videoService.addVideo(video);
     }
 
 
 
-    @Operation(summary = "Using tis endpoint video-streaming application can post replayed section of a video")
+    @Operation(summary = "Using this endpoint video-streaming application can post replayed section of a video")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Added replyed section of a video"),
+            @ApiResponse(responseCode = "201", description = "Added replayed section of a video"),
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "500", description = "Server Error")})
     @Log
     @PostMapping("/replayVideoSection")
+    @ResponseStatus(HttpStatus.CREATED)
     public ReplayedSectionDTO addReplaySection(@RequestBody ReplayedSectionDTO replayedSectionDTO){
          return replayedService.addReplayVideoSection(replayedSectionDTO);
     }
 
-    @Operation(summary = "Using tis endpoint video-streaming application can get the most replyed section of any video.")
+    @Operation(summary = "Using this endpoint video-streaming application can get the most replayed section of any video.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "Created book"),
+            @ApiResponse(responseCode = "200", description = "Return most replayed section of a video."),
             @ApiResponse(responseCode = "400", description = "Bad request"),
             @ApiResponse(responseCode = "500", description = "Server Error")})
     @GetMapping("/mostReplayedVideoSection/{videoId}")
     @Log
-    public ResponseEntity<MostReplayedVideoSectionDTO> getMostReplayedVideoSection(@PathVariable("videoId") Long videoId){
-        return new ResponseEntity<MostReplayedVideoSectionDTO>(replayedService.getMostReplayedVideoSection(videoId), HttpStatus.OK);
+    @ResponseStatus(HttpStatus.OK)
+    public MostReplayedVideoSectionDTO getMostReplayedVideoSection(@PathVariable("videoId") Long videoId){
+        return replayedService.getMostReplayedVideoSection(videoId);
     }
 
 
